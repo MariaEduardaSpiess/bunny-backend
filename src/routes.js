@@ -2,46 +2,25 @@ const express = require('express');
 const routes = express.Router();
 const connection = require('./database/connection');
 
-routes.post('/login', async (request, response) => {
-    let res;
-    await connection('usuario').where({'email': request.body.email, 'senha': request.body.senha})
-        .then(resServer => {
-            res = resServer;
-        });
-    return response.json(res);
-});
-
-routes.post('/peca', async (request, response) => {
-    await connection('peca').insert(request.body);
+routes.post('/user', async (request, response) => {
+    await connection('user').insert(request.body);
     return response.json();
 });
 
-routes.get('/peca', async (request, response) => {
-    const pecas = await connection('peca').select('*');
-
-    return response.json(pecas);
+routes.get('/user', async (request, response) => {
+    const users = await connection('user').select('*');
+    return response.json(users);
 });
 
-routes.post('/cliente', async (request, response) => {
-    await connection('cliente').insert(request.body);
+routes.post('/user-task', async (request, response) => {
+    request.body.user_id = request.query.user;
+    await connection('user_task').insert(request.body);
     return response.json();
 });
 
-routes.get('/cliente', async (request, response) => {
-    const pecas = await connection('cliente').select('*');
-
-    return response.json(pecas);
-});
-
-routes.post('/pedido', async (request, response) => {
-    await connection('pedido').insert(request.body);
-    return response.json();
-});
-
-routes.get('/pedido', async (request, response) => {
-    const pecas = await connection('pedido').select('*');
-
-    return response.json(pecas);
+routes.get('/user-task', async (request, response) => {
+    const userTasks = await connection('user_task').where('user_id', request.query.user).select('*');
+    return response.json(userTasks);
 });
 
 module.exports = routes;
