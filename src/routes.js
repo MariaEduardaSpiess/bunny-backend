@@ -24,7 +24,7 @@ routes.delete('/user', async (request, response) => {
 });
 
 routes.post('/user-task', async (request, response) => {
-    if (!request.body.user_id) {
+    if (!request.body.id) {
         request.body.user_id = request.query.user;
         await connection('user_task').insert(request.body);
     } else {
